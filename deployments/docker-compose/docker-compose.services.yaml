@@ -7,6 +7,9 @@ services:
   gateway:
     # https://nickjanetakis.com/blog/docker-tip-57-using-build-and-image-in-the-same-docker-compose-servicemage
     # https://github.com/opencontainers/.github/blob/master/docs/docs/introduction/digests.md
+    # https://docs.docker.com/compose/environment-variables/set-environment-variables/#substitute-with-an-env-file
+    # https://docs.docker.com/compose/environment-variables/set-environment-variables/#substitute-from-the-shell
+    # Substitute for replacing evnironment only support from `.env file substitute` and `shell substitute` for reading shell based environemnts
     image: ${REGISTRY:-ghcr.io}/${PROJECT_NAME:-mehdihadeli/ecommerce-microservices}/gateway-service:${TAG:-latest}
     container_name: gateway-${TAG:-latest}
     # https://docs.docker.com/compose/compose-file/compose-file-v3/#restart
@@ -22,6 +25,13 @@ services:
       - ASPNETCORE_URLS=https://+:443;http://+:80
       - ASPNETCORE_Kestrel__Certificates__Default__Password=${DEV_CERT_PASSWORD:-your_password}
       - ASPNETCORE_Kestrel__Certificates__Default__Path=/https/aspnetapp.pfx
+    # https://docs.docker.com/compose/environment-variables/set-environment-variables/
+    # https://docs.docker.com/compose/environment-variables/env-file/
+    # https://docs.docker.com/compose/environment-variables/set-environment-variables/#substitute-with---env-file
+    # Substitute env files and replacing (without passing to container) inner docker-compose files with `--env-file` and pass the file as an argument in the CLI, If the --env-file is not used in the command line, the .env file is loaded by default(docker compose --env-file ./config/.env.dev up)
+    # Pass multiple environment variables from an external file through to a service’s `containers` with the `env_file` attribute
+    env_file:
+      - ./.env
     volumes:
       - ~/.aspnet/https:/https:ro
     networks:
@@ -30,6 +40,9 @@ services:
   catalogs:
     # https://nickjanetakis.com/blog/docker-tip-57-using-build-and-image-in-the-same-docker-compose-service
     # https://github.com/opencontainers/.github/blob/master/docs/docs/introduction/digests.md
+    # https://docs.docker.com/compose/environment-variables/set-environment-variables/#substitute-with-an-env-file
+    # https://docs.docker.com/compose/environment-variables/set-environment-variables/#substitute-from-the-shell
+    # Substitute for replacing evnironment only support from `.env file substitute` and `shell substitute` for reading shell based environemnts
     image: ${REGISTRY:-ghcr.io}/${PROJECT_NAME:-mehdihadeli/ecommerce-microservices}/catalogs-service:${TAG:-latest}
     # https://docs.docker.com/compose/compose-file/compose-file-v3/#restart
     restart: on-failure
@@ -39,9 +52,12 @@ services:
       - ${CATALOGS_HTTPS_SVC_PORT:-4001}:443
     # https://docs.docker.com/compose/environment-variables/set-environment-variables/
     # https://docs.docker.com/compose/environment-variables/env-file/
-    # .env file will resolved implicitly
+    # https://docs.docker.com/compose/environment-variables/set-environment-variables/#substitute-with---env-file
+    # Substitute env files and replacing (without passing to container) inner docker-compose files with `--env-file` and pass the file as an argument in the CLI, If the --env-file is not used in the command line, the .env file is loaded by default(docker compose --env-file ./config/.env.dev up)
+    # Pass multiple environment variables from an external file through to a service’s `containers` with the `env_file` attribute
     env_file:
-      - ./catalogs.env
+      - ./.env
+      - ./.env.catalogs
     # https://learn.microsoft.com/en-us/aspnet/core/security/docker-compose-https?view=aspnetcore-7.0#windows-using-windows-containers
     environment:
       - ASPNETCORE_ENVIRONMENT=docker
@@ -56,6 +72,9 @@ services:
   identity:
     # https://nickjanetakis.com/blog/docker-tip-57-using-build-and-image-in-the-same-docker-compose-service
     # https://github.com/opencontainers/.github/blob/master/docs/docs/introduction/digests.md
+    # https://docs.docker.com/compose/environment-variables/set-environment-variables/#substitute-with-an-env-file
+    # https://docs.docker.com/compose/environment-variables/set-environment-variables/#substitute-from-the-shell
+    # Substitute for replacing evnironment only support from `.env file substitute` and `shell substitute` for reading shell based environemnts
     image: ${REGISTRY:-ghcr.io}/${PROJECT_NAME:-mehdihadeli/ecommerce-microservices}/identity-service:${TAG:-latest}
     container_name: identity-{TAG:-latest}
     # https://docs.docker.com/compose/compose-file/compose-file-v3/#restart
@@ -65,9 +84,12 @@ services:
       - ${IDENTITY_HTTPS_SVC_PORT:-7001}:443
     # https://docs.docker.com/compose/environment-variables/set-environment-variables/
     # https://docs.docker.com/compose/environment-variables/env-file/
-    # .env file will resolved implicitly
+    # https://docs.docker.com/compose/environment-variables/set-environment-variables/#substitute-with---env-file
+    # Substitute env files and replacing (without passing to container) inner docker-compose files with `--env-file` and pass the file as an argument in the CLI, If the --env-file is not used in the command line, the .env file is loaded by default(docker compose --env-file ./config/.env.dev up)
+    # Pass multiple environment variables from an external file through to a service’s `containers` with the `env_file` attributebute
     env_file:
-      - ./identity.env
+      - ./.env
+      - ./.env.identity
     # https://learn.microsoft.com/en-us/aspnet/core/security/docker-compose-https?view=aspnetcore-7.0#windows-using-windows-containers
     environment:
       - ASPNETCORE_ENVIRONMENT=docker
@@ -82,6 +104,9 @@ services:
   customers:
     # https://nickjanetakis.com/blog/docker-tip-57-using-build-and-image-in-the-same-docker-compose-service
     # https://github.com/opencontainers/.github/blob/master/docs/docs/introduction/digests.md
+    # https://docs.docker.com/compose/environment-variables/set-environment-variables/#substitute-with-an-env-file
+    # https://docs.docker.com/compose/environment-variables/set-environment-variables/#substitute-from-the-shell
+    # Substitute for replacing evnironment only support from `.env file substitute` and `shell substitute` for reading shell based environemnts
     image: ${REGISTRY:-ghcr.io}/${PROJECT_NAME:-mehdihadeli/ecommerce-microservices}/customers-service:${TAG:-latest}
     container_name: customers-{TAG:-latest}
     # https://docs.docker.com/compose/compose-file/compose-file-v3/#restart
@@ -91,9 +116,12 @@ services:
       - ${CUSTOMERS_HTTPS_SVC_PORT:-8001}:443
     # https://docs.docker.com/compose/environment-variables/set-environment-variables/
     # https://docs.docker.com/compose/environment-variables/env-file/
-    # .env file will resolved implicitly
+    # https://docs.docker.com/compose/environment-variables/set-environment-variables/#substitute-with---env-file
+    # Substitute env files and replacing (without passing to container) inner docker-compose files with `--env-file` and pass the file as an argument in the CLI, If the --env-file is not used in the command line, the .env file is loaded by default(docker compose --env-file ./config/.env.dev up)
+    # Pass multiple environment variables from an external file through to a service’s `containers` with the `env_file` attribute
     env_file:
-      - ./customers.env
+      - ./.env
+      - ./.env.customers
     # https://learn.microsoft.com/en-us/aspnet/core/security/docker-compose-https?view=aspnetcore-7.0#windows-using-windows-containers
     environment:
       - ASPNETCORE_ENVIRONMENT=docker

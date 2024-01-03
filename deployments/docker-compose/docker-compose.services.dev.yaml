@@ -13,6 +13,16 @@ services:
     build:
       context: ../../
       dockerfile: src/ApiGateway/dev.Dockerfile
+    # Environment Variables are only passed to processes upon startup, Environment Variables are not reloaded once the process has started so if we need to realod app we can use volume map for waching our new setting from `config-files` folder in the the volume or volume map for appsettings.json file
+    # https://www.thorsten-hans.com/hot-reload-net-configuration-in-kubernetes-with-configmaps/
+    environment:
+      # https://learn.microsoft.com/en-us/aspnet/core/tutorials/dotnet-watch?view=aspnetcore-7.0#dotnet-watch-configuration
+      # https://learn.microsoft.com/en-us/dotnet/core/tools/dotnet-watch?WT.mc_id=DOP-MVP-5001942#environment-variables
+      # https://learn.microsoft.com/en-us/aspnet/core/fundamentals/file-providers?view=aspnetcore-3.1#watch-for-changes
+      # Some file systems, such as Docker containers and network shares, may not reliably send change notifications. Set the DOTNET_USE_POLLING_FILE_WATCHER environment variable to 1 or true to poll the file system for changes every four seconds
+      # If set to "1" or "true", dotnet watch uses a polling file watcher instead of CoreFx's FileSystemWatcher. Used when watching files on network shares or Docker mounted volumes.
+      - DOTNET_USE_POLLING_FILE_WATCHER=1
+      - ConfigurationFolder=${ConfigurationFolder:-config-files/}
     container_name: gateway-dev
     # https://www.richard-banks.org/2018/07/debugging-core-in-docker.html
     # https://copyprogramming.com/howto/docker-compose-says-pwd-variable-not-set-windows
@@ -26,6 +36,12 @@ services:
       - ~/vsdbg:/vsdbg:ro
       - ~/.nuget/packages:/root/.nuget/packages:ro
       - ~/.nuget/packages:/home/appuser/.nuget/packages:ro
+      # https://www.thorsten-hans.com/hot-reload-net-configuration-in-kubernetes-with-configmaps/
+      # if we need to reload app, we can use volume map for watching our new setting from config-files folder in the the volume or change appsettings.json file in volume map
+      - src/ApiGateway/ECommerce.ApiGateway/${ConfigurationFolder:-config-files/}:/app/config-files/
+      # https://levelup.gitconnected.com/docker-environment-variables-appsettings-json-net-bdac052bf3db
+      # https://bartwullems.blogspot.com/2021/03/kubernetesoverride-appsettingsjson-file.html
+      - ./src/ApiGateway/dev.Dockerfile/ECommerce.ApiGateway/appsettings.docker.json:/app/appsettings.docker.json
 
   catalogs:
     # https://nickjanetakis.com/blog/docker-tip-57-using-build-and-image-in-the-same-docker-compose-service
@@ -38,6 +54,16 @@ services:
       # https://www.howtogeek.com/devops/understanding-the-docker-build-context-why-you-should-use-dockerignore/
       context: ../../
       dockerfile: src/Services/Catalogs/dev.Dockerfile
+    # Environment Variables are only passed to processes upon startup, Environment Variables are not reloaded once the process has started so if we need to realod app we can use volume map for waching our new setting from `config-files` folder in the the volume or volume map for appsettings.json file
+    # https://www.thorsten-hans.com/hot-reload-net-configuration-in-kubernetes-with-configmaps/
+    environment:
+      # https://learn.microsoft.com/en-us/aspnet/core/tutorials/dotnet-watch?view=aspnetcore-7.0#dotnet-watch-configuration
+      # https://learn.microsoft.com/en-us/dotnet/core/tools/dotnet-watch?WT.mc_id=DOP-MVP-5001942#environment-variables
+      # https://learn.microsoft.com/en-us/aspnet/core/fundamentals/file-providers?view=aspnetcore-3.1#watch-for-changes
+      # Some file systems, such as Docker containers and network shares, may not reliably send change notifications. Set the DOTNET_USE_POLLING_FILE_WATCHER environment variable to 1 or true to poll the file system for changes every four seconds
+      # If set to "1" or "true", dotnet watch uses a polling file watcher instead of CoreFx's FileSystemWatcher. Used when watching files on network shares or Docker mounted volumes.
+      - DOTNET_USE_POLLING_FILE_WATCHER=1
+      - ConfigurationFolder=${ConfigurationFolder:-config-files/}
     container_name: catalogs-dev
     # https://www.richard-banks.org/2018/07/debugging-core-in-docker.html
     # https://copyprogramming.com/howto/docker-compose-says-pwd-variable-not-set-windows
@@ -51,6 +77,12 @@ services:
       - ~/vsdbg:/vsdbg:ro
       - ~/.nuget/packages:/root/.nuget/packages:ro
       - ~/.nuget/packages:/home/appuser/.nuget/packages:ro
+      # https://www.thorsten-hans.com/hot-reload-net-configuration-in-kubernetes-with-configmaps/
+      # if we need to reload app, we can use volume map for watching our new setting from config-files folder in the the volume or change appsettings.json file in volume map
+      - src/Services/Catalogs/ECommerce.Services.Catalogs.Api/${ConfigurationFolder:-config-files/}:/app/config-files/
+      # https://levelup.gitconnected.com/docker-environment-variables-appsettings-json-net-bdac052bf3db
+      # https://bartwullems.blogspot.com/2021/03/kubernetesoverride-appsettingsjson-file.html
+      - ./src/Services/Catalogs/ECommerce.Services.Catalogs.Api/appsettings.docker.json
 
   identity:
     # https://nickjanetakis.com/blog/docker-tip-57-using-build-and-image-in-the-same-docker-compose-service
@@ -63,6 +95,16 @@ services:
       # https://www.howtogeek.com/devops/understanding-the-docker-build-context-why-you-should-use-dockerignore/
       context: ../../
       dockerfile: src/Services/Identity/dev.Dockerfile
+    # Environment Variables are only passed to processes upon startup, Environment Variables are not reloaded once the process has started so if we need to realod app we can use volume map for waching our new setting from `config-files` folder in the the volume or volume map for appsettings.json file
+    # https://www.thorsten-hans.com/hot-reload-net-configuration-in-kubernetes-with-configmaps/
+    environment:
+      # https://learn.microsoft.com/en-us/aspnet/core/tutorials/dotnet-watch?view=aspnetcore-7.0#dotnet-watch-configuration
+      # https://learn.microsoft.com/en-us/dotnet/core/tools/dotnet-watch?WT.mc_id=DOP-MVP-5001942#environment-variables
+      # https://learn.microsoft.com/en-us/aspnet/core/fundamentals/file-providers?view=aspnetcore-3.1#watch-for-changes
+      # Some file systems, such as Docker containers and network shares, may not reliably send change notifications. Set the DOTNET_USE_POLLING_FILE_WATCHER environment variable to 1 or true to poll the file system for changes every four seconds
+      # If set to "1" or "true", dotnet watch uses a polling file watcher instead of CoreFx's FileSystemWatcher. Used when watching files on network shares or Docker mounted volumes.
+      - DOTNET_USE_POLLING_FILE_WATCHER=1
+      - ConfigurationFolder=${ConfigurationFolder:-config-files/}
     container_name: identity-dev
     # https://www.richard-banks.org/2018/07/debugging-core-in-docker.html
     # https://copyprogramming.com/howto/docker-compose-says-pwd-variable-not-set-windows
@@ -76,6 +118,12 @@ services:
       - ~/vsdbg:/vsdbg:ro
       - ~/.nuget/packages:/root/.nuget/packages:ro
       - ~/.nuget/packages:/home/appuser/.nuget/packages:ro
+      # https://www.thorsten-hans.com/hot-reload-net-configuration-in-kubernetes-with-configmaps/
+      # if we need to reload app, we can use volume map for watching our new setting from config-files folder in the the volume or change appsettings.json file in volume map
+      - src/Services/Identity/ECommerce.Services.Identity.Api/${ConfigurationFolder:-config-files/}:/app/config-files/
+      # https://levelup.gitconnected.com/docker-environment-variables-appsettings-json-net-bdac052bf3db
+      # https://bartwullems.blogspot.com/2021/03/kubernetesoverride-appsettingsjson-file.html
+      - ./src/Services/Identity/ECommerce.Services.Identity.Api/appsettings.docker.json
 
   customers:
     # https://nickjanetakis.com/blog/docker-tip-57-using-build-and-image-in-the-same-docker-compose-service
@@ -88,6 +136,16 @@ services:
       # https://www.howtogeek.com/devops/understanding-the-docker-build-context-why-you-should-use-dockerignore/
       context: ../../
       dockerfile: src/Services/Customers/dev.Dockerfile
+    # Environment Variables are only passed to processes upon startup, Environment Variables are not reloaded once the process has started so if we need to realod app we can use volume map for waching our new setting from `config-files` folder in the the volume or volume map for appsettings.json file
+    # https://www.thorsten-hans.com/hot-reload-net-configuration-in-kubernetes-with-configmaps/
+    environment:
+      # https://learn.microsoft.com/en-us/aspnet/core/tutorials/dotnet-watch?view=aspnetcore-7.0#dotnet-watch-configuration
+      # https://learn.microsoft.com/en-us/dotnet/core/tools/dotnet-watch?WT.mc_id=DOP-MVP-5001942#environment-variables
+      # https://learn.microsoft.com/en-us/aspnet/core/fundamentals/file-providers?view=aspnetcore-3.1#watch-for-changes
+      # Some file systems, such as Docker containers and network shares, may not reliably send change notifications. Set the DOTNET_USE_POLLING_FILE_WATCHER environment variable to 1 or true to poll the file system for changes every four seconds
+      # If set to "1" or "true", dotnet watch uses a polling file watcher instead of CoreFx's FileSystemWatcher. Used when watching files on network shares or Docker mounted volumes.
+      - DOTNET_USE_POLLING_FILE_WATCHER=1
+      - ConfigurationFolder=${ConfigurationFolder:-config-files/}
     container_name: customers-dev
     # https://www.richard-banks.org/2018/07/debugging-core-in-docker.html
     # https://copyprogramming.com/howto/docker-compose-says-pwd-variable-not-set-windows
@@ -101,3 +159,9 @@ services:
       - ~/vsdbg:/vsdbg:ro
       - ~/.nuget/packages:/root/.nuget/packages:ro
       - ~/.nuget/packages:/home/appuser/.nuget/packages:ro
+      # https://www.thorsten-hans.com/hot-reload-net-configuration-in-kubernetes-with-configmaps/
+      # if we need to reload app, we can use volume map for watching our new setting from config-files folder in the the volume or change appsettings.json file in volume map
+      - src/Services/Customers/ECommerce.Services.Customers.Api/${ConfigurationFolder:-config-files/}:/app/config-files/
+      # https://levelup.gitconnected.com/docker-environment-variables-appsettings-json-net-bdac052bf3db
+      # https://bartwullems.blogspot.com/2021/03/kubernetesoverride-appsettingsjson-file.html
+      - ./src/Services/Customers/ECommerce.Services.Customers.Api/appsettings.docker.json

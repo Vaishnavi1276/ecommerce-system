@@ -2,7 +2,6 @@ using Ardalis.ApiEndpoints;
 using Ardalis.GuardClauses;
 using Asp.Versioning;
 using BuildingBlocks.Abstractions.CQRS.Queries;
-using ECommerce.Services.Customers.RestockSubscriptions.Dtos;
 using ECommerce.Services.Customers.RestockSubscriptions.Dtos.v1;
 using Hellang.Middleware.ProblemDetails;
 using Swashbuckle.AspNetCore.Annotations;
